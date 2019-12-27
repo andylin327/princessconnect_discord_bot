@@ -1,0 +1,16 @@
+{
+	"name": "testBot",
+	"version": "1.0.0",
+	"description": "testBot1",
+	"main": "bot.js",
+	"author": "Double",
+	"dependencies": {
+		"async": "^3.1.0",
+		"discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+		"discord.js": "^11.5.1",
+		"google-spreadsheet": "^2.0.8",
+		"jquery": "^3.4.1",
+		"jsdom": "^15.2.1",
+		"winston": "^3.2.1"
+	}
+}
