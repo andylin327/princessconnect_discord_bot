@@ -1,6 +1,6 @@
 ﻿//引入
 var GoogleSpreadsheet = require('google-spreadsheet');
-var creds = require('./discord-c1dddbf3aaf4.json');
+var creds = require('./discord-136634083930-ed0899950e58.json');
 var Discord = require('discord.io');
 var logger = require('winston');
 var auth = require('./auth.json');
