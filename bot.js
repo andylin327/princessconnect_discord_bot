@@ -50,11 +50,8 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 		//先記錄當下時間
 		var now_date 	= new Date();
 		//設定時差
-		writeErrorLog('--------------------------------------------------');
-		writeErrorLog(init.time_difference);
-		writeErrorLog(now_date);
 		now_date = setTimezone(now_date, init.time_difference);
-		writeErrorLog(now_date);
+		
 		try{
 			var create_date = new Date().Format("yyyy-MM-dd hh:mm:ss");
 			let log = {
@@ -150,7 +147,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 							var columns = [];
 							var column_name = '';
 							var is_update = false;
-							writeErrorLog(now_date);
+							
 							//逐列讀取所有資料(不包含標頭，也就是第一列)
 							rows.forEach(function(item, index, array){
 								
@@ -164,9 +161,6 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 																							
 											if(value != ''){
 												let timestamp_date = new Date(now_y+'-'+value+ ' '+ now_date.getHours() + ':' + now_date.getMinutes() + ':' + now_date.getSeconds());
-												//timestamp_date = setTimezone(timestamp_date, init.time_difference);
-												
-												writeErrorLog(timestamp_date);
 												
 												let timestamp = parseInt(Date.parse(timestamp_date));
 													
