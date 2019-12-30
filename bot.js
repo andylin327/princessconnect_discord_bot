@@ -150,7 +150,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 							var columns = [];
 							var column_name = '';
 							var is_update = false;
-							
+							writeErrorLog(now_date);
 							//逐列讀取所有資料(不包含標頭，也就是第一列)
 							rows.forEach(function(item, index, array){
 								
@@ -164,7 +164,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 																							
 											if(value != ''){
 												let timestamp_date = new Date(now_y+'-'+value+ ' '+ now_date.getHours() + ':' + now_date.getMinutes() + ':' + now_date.getSeconds());
-												timestamp_date = setTimezone(timestamp_date, init.time_difference);
+												//timestamp_date = setTimezone(timestamp_date, init.time_difference);
 												
 												writeErrorLog(timestamp_date);
 												
@@ -272,9 +272,11 @@ function writeErrorLog(msg){
 }
 
 function setTimezone(date, timezone){
-	utc = (date.getTimezoneOffset() * -1) / 60;
-	
-	date.setHours(date.getHours() + (timezone - utc));
+	utc_offset = (date.getTimezoneOffset() * -1) / 60;
+
+	if(utc_offset != timezone){
+		date.setHours(date.getHours() - utc_offset + timezone);
+	}
 	
 	return date;
 }
