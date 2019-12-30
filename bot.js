@@ -274,7 +274,7 @@ function writeErrorLog(msg){
 function setTimezone(date, timezone){
 	utc = (date.getTimezoneOffset() * -1) / 60;
 	
-	date.setHours(date.getHours() + (utc - timezone));
+	date.setHours(date.getHours() + (timezone - utc));
 	
 	return date;
 }
