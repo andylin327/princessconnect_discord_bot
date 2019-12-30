@@ -70,8 +70,8 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 		
 		//用空白拆解訊息
 		var args 		= message.substring(2).split(' ');
-		//取得傷害數值
-		var field 		= args[0];
+		//取得第一字組文字
+		var field 		= args[0].replace(/\s+/g,"");
 		var damage 		= null;
 		var nickname 	= null;
 		//new Google API物件
@@ -118,11 +118,13 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 						if(is_int.test(args[1])){
 							damage = args[1];
 							
-							rows.forEach(function(item, index){
-								if(item['id'] == field && nickname == null){
-									nickname = item['id'];
-								}
-							});
+							if(field != ''){
+								rows.forEach(function(item, index){
+									if(item['id'] == field && nickname == null){
+										nickname = item['id'];
+									}
+								});
+							}
 						}
 					}
 					
