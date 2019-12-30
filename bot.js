@@ -54,7 +54,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 		writeErrorLog(init.time_difference);
 		writeErrorLog(now_date);
 		now_date = setTimezone(now_date, init.time_difference);
-		
+		writeErrorLog(now_date);
 		try{
 			var create_date = new Date().Format("yyyy-MM-dd hh:mm:ss");
 			let log = {
@@ -257,13 +257,17 @@ function writeDateUpdateLog(msg){
 function writeErrorLog(msg){
 	try{
 		if(fs == undefined){
-			var fs = require('fs');
+			var fs 	= require('fs');
 		}
-
-		fs.appendFile(external_path+'error_log.txt', msg+'\n');
+		var date	= setTimezone(new Date(), init.time_difference);
+		
+		fs.appendFile(external_path+'error_log.txt', '【'+date.Format("yyyy-MM-dd hh:mm:ss")+'】'+ msg +'\n', function (err) {
+			if (err) throw err;
+		});
 	} catch(e){
 		console.log('----------------Error----------------');
 		console.log('檔案寫入失敗。');
+		console.log(e);
 	}	
 }
 
