@@ -4,7 +4,7 @@ var GoogleSpreadsheet = require('google-spreadsheet');
 var creds = require(external_path+'discord-136634083930-ed0899950e58.json');
 var Discord = require('discord.io');
 var logger = require('winston');
-var auth = require(external_path+'auth.json');
+var init = require(external_path+'auth.json');
 
 Date.prototype.Format = function (fmt) {
     var o = {
@@ -30,7 +30,7 @@ logger.add(new logger.transports.Console, {
 //logger.level = "debug";
 // Initialize Discord Bot
 var bot = new Discord.Client({
-   token: auth.token,
+   token: init.token,
    autorun: true
 });
 bot.on("ready", function (evt) {
@@ -49,6 +49,8 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 	if (message.substring(0, 2) == '!!') {
 		//先記錄當下時間
 		var now_date 	= new Date();
+		//設定時差
+		now_date.setHours(now_date.getHours() + init.time_difference);
 		
 		try{
 			var create_date = new Date().Format("yyyy-MM-dd hh:mm:ss");
@@ -73,7 +75,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 		var damage 		= null;
 		var nickname 	= null;
 		//new Google API物件
-		var doc 		= new GoogleSpreadsheet(auth.path);		
+		var doc 		= new GoogleSpreadsheet(init.path);		
 		
 		try{
 		
