@@ -1,12 +1,12 @@
-﻿//引入
+﻿var external_path = '../Re_Dive_BOT/';
+//引入
 var GoogleSpreadsheet = require('google-spreadsheet');
-var creds = require('./discord-136634083930-ed0899950e58.json');
+var creds = require(external_path+'discord-136634083930-ed0899950e58.json');
 var Discord = require('discord.io');
 var logger = require('winston');
-var auth = require('./auth.json');
+var auth = require(external_path+'auth.json');
 
-
-Date.prototype.Format = function (fmt) { //author: meizz 
+Date.prototype.Format = function (fmt) {
     var o = {
         "M+": this.getMonth() + 1, //月份 
         "d+": this.getDate(), //日 
@@ -22,14 +22,12 @@ Date.prototype.Format = function (fmt) { //author: meizz
     return fmt;
 }
 
-
-
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(new logger.transports.Console, {
     colorize: true
 });
-logger.level = "debug";
+//logger.level = "debug";
 // Initialize Discord Bot
 var bot = new Discord.Client({
    token: auth.token,
@@ -43,14 +41,14 @@ bot.on("ready", function (evt) {
 
 var is_int = /^[0-9]+$/;
 var is_ds_id = /^[0-9]{18,18}$/;
+var fs = require('fs');
 
 bot.on("message", function (user, userID, channelID, message, evt) {
 	
 	//檢查訊息是否有帶入指定符號
 	if (message.substring(0, 2) == '!!') {
 		//先記錄當下時間
-			var now_date 	= new Date();
-		var fs = require('fs');
+		var now_date 	= new Date();
 		
 		try{
 			var create_date = new Date().Format("yyyy-MM-dd hh:mm:ss");
@@ -61,12 +59,10 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 				message : message,
 				create_date : create_date,
 			}
+			writeDateUpdateLog( '【'+create_date+'】 '+ JSON.stringify(log));
 			
-			fs.appendFile('write_log.txt', '【'+create_date+'】 '+ JSON.stringify(log) +'\n', function (err) {
-				if (err) throw err;
-			});
 		} catch (e){
-			fs.appendFile('error_log.txt', e);
+			writeErrorLog(e);
 		}
 		
 		
@@ -77,7 +73,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 		var damage 		= null;
 		var nickname 	= null;
 		//new Google API物件
-		var doc 		= new GoogleSpreadsheet('1nfPapQ4s-VO3YSbkpLb6g9hX6bNdxinCNAgprtOwNQU');		
+		var doc 		= new GoogleSpreadsheet(auth.path);		
 		
 		try{
 		
@@ -199,7 +195,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 												try{
 													item.save();
 												}catch(e){
-													fs.appendFile('error_log.txt', e);
+													writeErrorLog(e);
 												}
 											}
 										}
@@ -222,8 +218,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 			});	
 		
 		} catch (e){
-			console.log(e);
-			fs.appendFile('error_log.txt', e);
+			writeErrorLog(e);
 		}
 	}
 });//end bot.on
@@ -234,4 +229,31 @@ function sendMessage(bot, channelID, message){
 		to: channelID,
 		message: message,
 	});
+}
+
+function writeDateUpdateLog(msg){
+	try{
+		if(fs == undefined){
+			var fs = require('fs');
+		}
+
+		fs.appendFile(external_path+'write_log.txt', msg +'\n', function (err) {
+			if (err) throw err;
+		});
+	} catch(e){
+		throw e
+	}
+}
+
+function writeErrorLog(msg){
+	try{
+		if(fs == undefined){
+			var fs = require('fs');
+		}
+
+		fs.appendFile(external_path+'error_log.txt', msg+'\n');
+	} catch(e){
+		console.log('----------------Error----------------');
+		console.log('檔案寫入失敗。');
+	}	
 }
