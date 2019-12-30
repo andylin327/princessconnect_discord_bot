@@ -50,7 +50,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 		//先記錄當下時間
 		var now_date 	= new Date();
 		//設定時差
-		now_date.setHours(now_date.getHours() + init.time_difference);
+		now_date = setTimezone(now_date, init.time_difference);
 		
 		try{
 			var create_date = new Date().Format("yyyy-MM-dd hh:mm:ss");
@@ -160,7 +160,8 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 										JSON.parse(json, (key, value) => {
 																							
 											if(value != ''){
-												let timestamp_date = new Date(now_y+'/'+value+ ' '+ now_date.getHours() + ':' + now_date.getMinutes() + ':' + now_date.getSeconds());
+												let timestamp_date = new Date(now_y+'-'+value+ ' '+ now_date.getHours() + ':' + now_date.getMinutes() + ':' + now_date.getSeconds());
+												timestamp_date = setTimezone(timestamp_date, init.time_difference);
 												let timestamp = parseInt(Date.parse(timestamp_date));
 													
 												if(!isNaN(timestamp) || value == 'Total'){
@@ -258,4 +259,12 @@ function writeErrorLog(msg){
 		console.log('----------------Error----------------');
 		console.log('檔案寫入失敗。');
 	}	
+}
+
+function setTimezone(date, timezone){
+	utc = (date.getTimezoneOffset() * -1) / 60;
+	
+	date.setHours(date.getHours() + (utc - timezone));
+	
+	return date;
 }
