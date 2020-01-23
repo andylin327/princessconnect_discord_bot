@@ -1,10 +1,10 @@
-﻿var external_path = '../Re_Dive_BOT/';
+﻿var external_path 		= '../Re_Dive_BOT/';
 //引入
-var GoogleSpreadsheet = require('google-spreadsheet');
-var creds = require(external_path+'discord-136634083930-ed0899950e58.json');
-var Discord = require('discord.io');
-var logger = require('winston');
-var init = require(external_path+'auth.json');
+var GoogleSpreadsheet 	= require('google-spreadsheet');
+var Discord 			= require('discord.io');
+var logger 				= require('winston');
+var init 				= require(external_path + 'auth.json');
+var creds 				= require(external_path + init.google_creds);
 
 Date.prototype.Format = function (fmt) {
     var o = {

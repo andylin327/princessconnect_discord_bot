@@ -6,6 +6,7 @@
 	"author": "Double",
 	"dependencies": {
 		"async": "^3.1.0",
+		"cron": "^1.8.1",
 		"discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
 		"discord.js": "^11.5.1",
 		"google-spreadsheet": "^2.0.8",
