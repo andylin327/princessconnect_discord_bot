@@ -26,24 +26,20 @@ bot.on("ready", function (evt) {
     logger.info("Logged in as: ");
     logger.info(bot.username + " - (" + bot.id + ")");
 	
-	/**
-	排程搜尋沒有填傷害的人
-	*/
-	new CronJob('0 30 3,4,23 '+webhook_init.war_day+' * *', function() {
+	new CronJob('55 59 4,23 '+webhook_init.war_day+' * *', function() {
 		
 		try{
-			
 			//先記錄當下時間
 			var now_date 	= new Date();
 			//設定時差
 			now_date = setTimezone(now_date, init.time_difference);
-						
-			//new Google API物件
-			var doc 		= new GoogleSpreadsheet(init.path);
 			
 			//將時間往前推5小時(因為重置時間為白天5點)
 			now_date.setHours(now_date.getHours()- 5);
 			var now_y 		= now_date.getFullYear();
+			
+			//new Google API物件
+			var doc 		= new GoogleSpreadsheet(init.path);
 			
 			//取得活頁簿欄位資料(index:7)
 			/*
@@ -99,7 +95,7 @@ bot.on("ready", function (evt) {
 								if(nickname != ''){
 									//前一天傷害
 									if(item[prev_column_name] == undefined){
-										var prev_damage = parseInt(null);
+										var prev_damage = 0;
 									} else {
 										var prev_damage = parseInt(item[prev_column_name].replace(/,/g, ""));
 									}
@@ -107,17 +103,27 @@ bot.on("ready", function (evt) {
 									//目前傷害
 									var now_damage = parseInt(item[column_name].replace(/,/g, ""));
 									
-									if(isNaN(prev_damage)){
+									console.log('nickname:'+nickname);
+									console.log('now_damage:'+now_damage);
+									console.log('prev_damage:'+prev_damage);
+									
+									var damage_difference = getDamageDifference(now_damage, prev_damage);
+									
+									if(prev_damage = 0){
 										//沒有前一天資料欄位
 										if(now_damage == 0){
-											notice_list.push({"nickname" : nickname, "msg" : "未填傷害"});
+											notice_list.push({"nickname" : nickname, "msg" : "隔日請記得填寫，可以請幹部協助補填分數，謝謝。", "is_tag" : true});
+										} else {
+											notice_list.push({"nickname" : nickname, "msg" : damage_difference, "is_tag" : (damage_difference <= 0)});
 										}
 									} else {
-										if(prev_damage == now_damage){
-											notice_list.push({"nickname" : nickname, "msg" : "未填傷害"});
-										} else if(prev_damage > now_damage){
-											notice_list.push({"nickname" : nickname, "msg" : "傷害填寫有問題!!!"});
+										
+										if(damage_difference > 0){
+											notice_list.push({"nickname" : nickname, "msg" : damage_difference, "is_tag" : false});
+										} else {
+											notice_list.push({"nickname" : nickname, "msg" : "隔日請記得填寫，可以請幹部協助補填分數，謝謝。", "is_tag" : true});
 										}
+										
 									}
 								}
 						}
@@ -128,13 +134,20 @@ bot.on("ready", function (evt) {
 						doc.getRows(3, function (err, rows) {
 							
 							if (err) throw err;
-							var notice_msg = '';
+							var notice_msg = (now_date.getMonth() + 1)+'/'+now_date.getDate()+' 傷害統計\n';
 							rows.forEach(function(item, index){
 								
 								notice_list.forEach(function(notice, index){
-									
+									index++;
+									if(index < 10){
+										index = '0'+index;
+									}
 									if(item['id'] == notice['nickname']){
-										notice_msg += "<@"+item['唯一id']+"> "+notice.msg+"\n";
+										if(notice['is_tag']){
+											notice_msg += index+" <@"+item['唯一id']+"> "+ notice.msg+"\n";
+										} else {
+											notice_msg += index+ " "+ notice['nickname'] + " "+notice.msg+"\n";
+										}
 									}
 								});
 							});
@@ -146,14 +159,19 @@ bot.on("ready", function (evt) {
 					}
 				});
 			});
+			
+			
 		} catch(e){
 			console.log('----------------Error----------------');
 			console.log(e);
 		}	
+		
 	}, null, true, 'Asia/Taipei');
-	
-	//
 });
+
+function getDamageDifference(now, prev){
+	return now - prev
+}
 
 function setTimezone(date, timezone){
 	utc_offset = (date.getTimezoneOffset() * -1) / 60;
