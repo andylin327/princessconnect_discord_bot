@@ -1,7 +1,9 @@
-npm install --save discord.js
+所須安裝套件
 
-npm install discord.io winston -–save
+npm install discord.js
 
-npm install https://github.com/woor/discord.io/tarball/gateway_v6
+npm i google-spreadsheet --save
 
-npm install google-spreadsheet
+npm install cron
+
+npm install request cheerio
