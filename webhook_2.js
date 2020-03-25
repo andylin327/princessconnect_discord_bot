@@ -31,7 +31,7 @@ bot.login(init.token);
 bot.on("ready", function (evt) {
 	console.log('Discord BOT webhook_2.js Ready');
 	
-	new CronJob('30 59 4,10,23 '+webhook_init.war_day+' * *',async function() {
+	new CronJob('30 59 4,23 '+webhook_init.war_day+' * *',async function() {
 		
 		try{
 			//先記錄當下時間
