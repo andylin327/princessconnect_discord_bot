@@ -214,7 +214,7 @@ bot.on("ready", function () {
 
 														//抓昨天的傷害值，來計算一些東西
 														if (key > 1) {
-															yesterday_data = google_excel_row_item.getKeyItemData(columns[key - 1]);
+															yesterday_data = parseInt(google_excel_row_item.getKeyItemData(columns[key - 1]).replace(/,/g, ""));
 														}
 
 														is_update = true;
@@ -252,12 +252,12 @@ bot.on("ready", function () {
 						if (yesterday_data != null && yesterday_data != undefined) {
 							let icon = ((damage - yesterday_data) > 0) ? '+' : '-';
 
-							if ((damage - yesterday_data) > 0) {
+							if ((damage - yesterday_data) >= 0) {
 								let add_damage = damage - yesterday_data;
 
 								msg += '\n  前一日傷害:' + yesterday_data;
 								msg += '\n' + icon + ' 傷害增幅:' + add_damage;
-								msg += '\n' + icon + ' 傷害增幅比例:' + (new Intl.NumberFormat().format(add_damage / yesterday_data) * 100) + '%';
+								msg += '\n' + icon + ' 傷害增幅比例:' + (Math.round(add_damage / yesterday_data * 100, 2)) + '%';
 							} else {
 								msg += '\n-總傷害值比前一日低無法比較';
                             }
