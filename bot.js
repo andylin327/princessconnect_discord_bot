@@ -160,6 +160,7 @@ bot.on("ready", function () {
 					var columns = [];
 					var column_name = '';
 					var yesterday_data = null;
+					var the_day_before_yesterday_data  = null
 
 					await damage_list_sheet_promise.then(function (damage_list_sheet_rows) {
 
@@ -215,6 +216,10 @@ bot.on("ready", function () {
 														//抓昨天的傷害值，來計算一些東西
 														if (key > 1) {
 															yesterday_data = parseInt(google_excel_row_item.getKeyItemData(columns[key - 1]).replace(/,/g, ""));
+															the_day_before_yesterday_data = parseInt(google_excel_row_item.getKeyItemData(columns[key - 2]).replace(/,/g, ""));
+															if(isNaN(the_day_before_yesterday_data)){
+																the_day_before_yesterday_data = 0;
+															}
 														}
 
 														is_update = true;
@@ -250,17 +255,18 @@ bot.on("ready", function () {
 						msg += '\n+資料已更新';
 						
 						if (yesterday_data != null && yesterday_data != undefined) {
-							let icon = ((damage - yesterday_data) > 0) ? '+' : '-';
+							let add_damage 	= damage - yesterday_data;
+							let icon 	= (add_damage >= (yesterday_data - the_day_before_yesterday_data)) ? '+' : '-';
 
 							if ((damage - yesterday_data) >= 0) {
-								let add_damage = damage - yesterday_data;
+								
 
-								msg += '\n  前一日傷害:' + yesterday_data;
-								msg += '\n' + icon + ' 傷害增幅:' + add_damage;
-								msg += '\n' + icon + ' 傷害增幅比例:' + (Math.round(add_damage / yesterday_data * 100, 2)) + '%';
+								msg += '\n  前一日傷害:' + (yesterday_data - the_day_before_yesterday_data);
+								msg += '\n  本日傷害  :' + add_damage;
+								msg += '\n' + icon + ' 傷害增幅比例:' + (Math.round(add_damage / (yesterday_data - the_day_before_yesterday_data) * 100, 2) - 100) + '%';
 							} else {
 								msg += '\n-總傷害值比前一日低無法比較';
-                            }
+                            				}
 						}
 
 						msg += '\n```';
