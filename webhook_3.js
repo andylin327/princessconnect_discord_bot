@@ -1,4 +1,4 @@
-const external_path = '../Re_Dive_BOT/';
+Ôªøconst external_path     = '../Re_Dive_BOT/';
 const request           = require("request");
 const cheerio           = require("cheerio");
 const fs                = require("fs");
@@ -12,21 +12,21 @@ const domain            = 'http://www.princessconnect.so-net.tw/';
 
 console.log('Official News Push webhook_3.js Ready');
 
-new CronJob('0 0 8-20 * * *', async function () {
+new CronJob('0 0 8-20 * * *',async  function () {
 
     try {
         var news_push_list = require(external_path + 'news_push_list.json');
 
         request({
-            url: domain + "/news", // ©x∫Ù≥Ã∑sÆ¯Æß¶C™Ì
+            url: domain + "/news", // ÂÆòÁ∂≤ÊúÄÊñ∞Ê∂àÊÅØÂàóË°®
             method: "GET"
         }, async function (error, response, body) {
                 if (error) {
                     console.log(error);
                     throw error;
                 } else if (!body) {
-                    console.log('®S¶≥ body');
-                    throw domain + '/news ®S¶≥ body';
+                    console.log('Ê≤íÊúâ body');
+                    throw domain + '/news Ê≤íÊúâ body';
                 }
                
                 const $ = cheerio.load(body, { decodeEntities: false });
@@ -37,11 +37,9 @@ new CronJob('0 0 8-20 * * *', async function () {
                     let news_id = parseInt($(this).attr('href').slice(17));
                     if (!isNaN(news_id)) {
 
-                        console.log(news_id);
-
                         if (!hasNewsId(news_push_list, news_id)) {
                             await request({
-                                url: domain + "news/newsDetail/" + news_id, //∑sªD∏‘≤”≠∂
+                                url: domain + "news/newsDetail/" + news_id, //Êñ∞ËÅûË©≥Á¥∞È†Å
                                 method: "GET"
                             }, await function (error, response, body) {
                                     
@@ -49,8 +47,8 @@ new CronJob('0 0 8-20 * * *', async function () {
                                         console.log(error);
                                         throw error;
                                     } else if (!body) {
-                                        console.log(domain + 'news/newsDetail/' + news_id + ' ®S¶≥ body');
-                                        throw domain + 'news/newsDetail/' + news_id+' ®S¶≥ body';
+                                        console.log(domain + 'news/newsDetail/' + news_id + ' Ê≤íÊúâ body');
+                                        throw domain + 'news/newsDetail/' + news_id+' Ê≤íÊúâ body';
                                     }
 
                                     let $ = cheerio.load(body);
@@ -60,12 +58,12 @@ new CronJob('0 0 8-20 * * *', async function () {
                                     news_date = news_date.replace(/\n/g, "");
 
                                     let title = '\n' + dom.find('h3').eq(0).text();
-                                    //let tag = '';
-                                    //if (title.indexOf('æ‘∂§') != -1 ) {
-                                    //    //tag += '@§@ØÎ¶®≠˚';      
-                                    //}     
-                                    //console.log('tag:' + decodeURIComponent(encodeURIComponent('@§@ØÎ¶®≠˚')));
-                                    //console.log(news_date + title);
+                                    let tag = '';
+                                    if (title.indexOf('Êà∞Èöä') != -1) {
+                                        tag += '<@&482220478551818251>';
+                                    } else if (title.indexOf('Á∂≠Ë≠∑') != -1) {
+                                        tag += '<@&482220478551818251>';
+                                    }
 
                                     let content_dom = dom.find('section').eq(0);
                                     content_dom.find('h4').remove();
@@ -105,7 +103,7 @@ new CronJob('0 0 8-20 * * *', async function () {
                                     let message = news_date + title + '\n';
                                     message += domain + 'news/newsDetail/' + news_id + '\n';
 
-                                    //message += tag +'\n';
+                                    message += tag +'\n';
 
                                     let message_sub = content.substring(0, 500);
                                     let message_len = content.length;
@@ -121,32 +119,24 @@ new CronJob('0 0 8-20 * * *', async function () {
                                     let json_obj = { id: news_id };
                                     news_push_list.push(json_obj);
 
-                                    //console.log(news_push_list);
-
                                     fs.writeFile(external_path + 'news_push_list.json', JSON.stringify(news_push_list), function (err) {
                                         if (err) throw err;
                                     });
-                                    //console.log('---------------------------------------------------');
 
                                     hook.send(message);
-                                    
-
-                                // ¶b≤◊∫›æ˜(console)¶C•Xµ≤™G
-                                //console.log(result);
                             });
                         }
                     }
                 });
         });
-
     } catch (e) {
-
         console.log('----------------Error----------------');
         console.log(e);
         public_function.writeErrorLog(e, init.time_difference, external_path);
 
     }
-});
+}, null, true, 'Asia/Taipei');
+
 
 function hasNewsId(list, _id) {
 
