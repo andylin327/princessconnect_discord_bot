@@ -257,7 +257,7 @@ bot.on("ready", function () {
 							var columns = [];
 							var column_name = '';
 							var yesterday_data = null;
-							var the_day_before_yesterday_data = null;
+							var the_day_before_yesterday_data = 0;
 
 							await damage_list_sheet_promise.then(function (damage_list_sheet_rows) {
 
@@ -310,6 +310,8 @@ bot.on("ready", function () {
 															} else if (value == 'ID') {
 																google_excel_row_item.setValue(value, "='01月角色調查'!A" + (index + 2));
 															} else if (value == column_name) {
+																//是否錯誤，錯誤的話不寫入傷害值
+																let is_error = false;
 
 																//抓昨天的傷害值，來計算一些東西
 																if (key > 1) {
@@ -318,10 +320,16 @@ bot.on("ready", function () {
 																	if(isNaN(the_day_before_yesterday_data)){
 																		the_day_before_yesterday_data = 0;
 																	}
+																	//臨時計算傷害增幅不可超過5倍(避免有人填錯的防呆)
+																	if (((damage - yesterday_data) / (yesterday_data - the_day_before_yesterday_data)) > 5) {
+																		is_error = true;
+                                                                    }
 																}
 
 																is_update = true;
-																google_excel_row_item.setValue(value, damage);
+																if (!is_error) {
+																	google_excel_row_item.setValue(value, damage);
+                                                                }
 															}
 
 															code++;
@@ -349,8 +357,10 @@ bot.on("ready", function () {
 							} else {
 
 								let msg = '\n```diff\n';
+								let update_status_msg = '\n+資料已更新';
+								let analysis_msg = '';
 								msg += '暱稱:' + nickname + '      更新總傷害:' + damage;
-								msg += '\n+資料已更新';
+								
 						
 								if (yesterday_data != null && yesterday_data != undefined) {
 
@@ -360,22 +370,27 @@ bot.on("ready", function () {
 									let icon				= (add_damage >= yesterday_damage) ? '+' : '-';
 
 									if ((damage - yesterday_data) >= 0) {
-										msg += '\n  前一日傷害:' + yesterday_damage;
-										msg += '\n  本日傷害  :' + add_damage;
-										if (yesterday_damage > 0) {
-											msg += '\n' + icon + ' 傷害增幅比例:' + (Math.round(add_damage / yesterday_damage * 100, 2) - 100) + '%';
+
+										let add_damage_percentage = (Math.round(add_damage / yesterday_damage * 100, 2) - 100);
+
+										//臨時計算傷害增幅不可超過5倍(避免有人填錯的防呆)
+										if (add_damage_percentage >= 500) {
+											update_status_msg = '\n-資料更新失敗，送出的傷害值過高，請確認是否填錯，如數值無誤，請洽管理員協助人工修改。';
 										} else {
-											msg += '\n- 傷害增幅比例:前一日無傷害，無法比較';
-                                						}
-								
+											analysis_msg += '\n  前一日傷害:' + yesterday_damage;
+											analysis_msg += '\n  本日傷害  :' + add_damage;
+											if (yesterday_damage > 0) {
+												analysis_msg += '\n' + icon + ' 傷害增幅比例:' + add_damage_percentage + '%';
+											} else {
+												analysis_msg += '\n- 傷害增幅比例:前一日無傷害，無法比較';
+											}
+                                        }
 									} else {
-										msg += '\n-總傷害值比前一日低無法比較';
+										analysis_msg += '\n-總傷害值比前一日低無法比較';
                             						}
 								}
 
-								msg += '\n```';
-
-								public_function.sendMessage(data, msg);
+								public_function.sendMessage(data, msg + update_status_msg + analysis_msg + '\n```');
 							}
 						}
 				}
