@@ -58,7 +58,7 @@ bot.on("ready", function () {
 				writeDateUpdateLog('【' + create_date + '】 ' + JSON.stringify(log), external_path);
 
 			} catch (e) {
-				public_function.writeErrorLog(e, init.time_difference, external_path);
+				public_function.writeErrorLog(e, init.time_difference, external_path, 'bot.js');
 			}
 
 			//用空白拆解訊息
@@ -166,11 +166,11 @@ bot.on("ready", function () {
 
 						let headers = damage_list_sheet.getHeaders();
 
-						damage_list_sheet_rows.forEach(async function (google_excel_row_item, index, array) {
+						damage_list_sheet_rows.forEach(async function (google_excel_row_item, index) {
 
 							switch (index) {
 								case 0:
-									headers.forEach(function (value, index, array) {
+									headers.forEach(function (value, index) {
 										let item_data = google_excel_row_item.getKeyItemData(value);
 										//
 										if (item_data == 'Total') {
@@ -193,7 +193,7 @@ bot.on("ready", function () {
 									});
 									break;
 								default:
-
+									
 									if (column_name != '') {
 
 										//開始針對暱稱搜尋資料
@@ -207,10 +207,11 @@ bot.on("ready", function () {
 
 												let code = parseInt('C'.charCodeAt());
 												columns.forEach(function (value, key) {
-
 													if (is_update) {
 														//更新後，將後續欄位都放上關聯前一個的寫法
 														google_excel_row_item.setValue(value, '=' + (String.fromCharCode((code - 2))) + (index + 2));
+													} else if (value == 'ID') {
+														google_excel_row_item.setValue(value, "='01月角色調查'!A" + (index + 2));
 													} else if (value == column_name) {
 
 														//抓昨天的傷害值，來計算一些東西
@@ -233,7 +234,7 @@ bot.on("ready", function () {
 													await google_excel_row_item.save();
 												} catch (e) {
 													public_function.sendMessage(data, '```diff\n-資料更新失敗 \n```');
-													public_function.writeErrorLog(e, init.time_difference, external_path);
+													public_function.writeErrorLog(e, init.time_difference, external_path, 'bot.js');
 												}
 											}
 										}
@@ -255,18 +256,24 @@ bot.on("ready", function () {
 						msg += '\n+資料已更新';
 						
 						if (yesterday_data != null && yesterday_data != undefined) {
-							let add_damage 	= damage - yesterday_data;
-							let icon 	= (add_damage >= (yesterday_data - the_day_before_yesterday_data)) ? '+' : '-';
+
+							let yesterday_damage = yesterday_data - the_day_before_yesterday_data;
+							
+							let add_damage 			= damage - yesterday_data;
+							let icon				= (add_damage >= yesterday_damage) ? '+' : '-';
 
 							if ((damage - yesterday_data) >= 0) {
-								
-
-								msg += '\n  前一日傷害:' + (yesterday_data - the_day_before_yesterday_data);
+								msg += '\n  前一日傷害:' + yesterday_damage;
 								msg += '\n  本日傷害  :' + add_damage;
-								msg += '\n' + icon + ' 傷害增幅比例:' + (Math.round(add_damage / (yesterday_data - the_day_before_yesterday_data) * 100, 2) - 100) + '%';
+								if (yesterday_damage > 0) {
+									msg += '\n' + icon + ' 傷害增幅比例:' + (Math.round(add_damage / yesterday_damage * 100, 2) - 100) + '%';
+								} else {
+									msg += '\n- 傷害增幅比例:前一日無傷害，無法比較';
+                                }
+								
 							} else {
 								msg += '\n-總傷害值比前一日低無法比較';
-                            				}
+                            }
 						}
 
 						msg += '\n```';
@@ -276,7 +283,7 @@ bot.on("ready", function () {
 				}
 			} catch (e) {
 				console.log(e);
-				public_function.writeErrorLog(e, init.time_difference, external_path);
+				public_function.writeErrorLog(e, init.time_difference, external_path, 'bot.js');
 			}
 		}
 	});//end bot.on message

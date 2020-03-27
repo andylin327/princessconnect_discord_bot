@@ -5,9 +5,11 @@ const fs                = require("fs");
 const CronJob           = require('cron').CronJob;
 const webhook_init      = require(external_path + 'webhook_3_init.json');
 const Discord           = require('discord.js');
+const init              = require(external_path + 'auth.json');
 const hook              = new Discord.WebhookClient(webhook_init.webhook_id, webhook_init.webhook_token);
-const publicFunction    = require('./public_function.js');
-const public_function   = new publicFunction();
+//const publicFunction    = require('./public_function.js');
+const botMainFunction   = require('./bot_main_function.js');
+const bot_main_function   = new botMainFunction();
 const domain            = 'http://www.princessconnect.so-net.tw/';
 
 console.log('Official News Push webhook_3.js Ready');
@@ -124,6 +126,41 @@ new CronJob('0 0 8-20 * * *',async  function () {
                                     });
 
                                     hook.send(message);
+
+                                    //公會戰預告發布就重置傷害表
+                                    if (title.indexOf('月戰隊競賽》開幕預告') != -1) {
+                                        let str_s = content.indexOf('【活動期間】') + 6;
+                                        let str_e = content.indexOf('【活動內容】');
+                                        let str_date = content.substring(str_s, str_e);
+                                        console.log('---------------');
+                                        str_date = str_date.replace(/\n/g, "").replace(/ ~ /g, "~");
+                                        console.log(str_date + '||||');
+                                        console.log('===============');
+
+
+                                        let str_datas = str_date.split('~');
+                                        let month = 0;
+                                        let s_day = 0;
+                                        let e_day = 0;
+                                        str_datas.forEach(function (v, i) {
+                                            let s_t1 = v.split(' ');
+                                            let s_t2 = s_t1[0].split('/');
+
+                                            month = parseInt(s_t2[0]);
+
+                                            switch (i) {
+                                                case 0:
+                                                    s_day = parseInt(s_t2[1]);
+                                                    break;
+                                                case 1:
+                                                    e_day = parseInt(s_t2[1]);
+                                                    break;
+                                            }
+
+                                        });
+
+                                        bot_main_function.damageActivityStart(month, s_day, e_day);
+                                    }
                             });
                         }
                     }
@@ -132,7 +169,7 @@ new CronJob('0 0 8-20 * * *',async  function () {
     } catch (e) {
         console.log('----------------Error----------------');
         console.log(e);
-        public_function.writeErrorLog(e, init.time_difference, external_path);
+        public_function.writeErrorLog(e, init.time_difference, external_path, 'webhook_3.js');
 
     }
 }, null, true, 'Asia/Taipei');

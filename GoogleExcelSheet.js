@@ -38,4 +38,8 @@ exports = module.exports = function (_sheet) {
     this.getHeaders = function () {
         return headers;
     }
+
+    this.getSheetObj = function () {
+        return sheet;
+    }
 };

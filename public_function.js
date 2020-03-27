@@ -1,3 +1,4 @@
+ï»¿'use strict';
 function publicFunction() {
 
 	var _this = this;
@@ -5,13 +6,13 @@ function publicFunction() {
 	this.dateFormat = function () {
 		Date.prototype.Format = function (fmt) {
 			var o = {
-				"M+": this.getMonth() + 1, //¤ë¥÷ 
-				"d+": this.getDate(), //¤é 
-				"h+": this.getHours(), //¤p? 
-				"m+": this.getMinutes(), //¤À 
-				"s+": this.getSeconds(), //¬í 
-				"q+": Math.floor((this.getMonth() + 3) / 3), //©u«× 
-				"S": this.getMilliseconds() //²@¬í 
+				"M+": this.getMonth() + 1, //æœˆä»½ 
+				"d+": this.getDate(), //æ—¥ 
+				"h+": this.getHours(), //å°? 
+				"m+": this.getMinutes(), //åˆ† 
+				"s+": this.getSeconds(), //ç§’ 
+				"q+": Math.floor((this.getMonth() + 3) / 3), //å­£åº¦ 
+				"S": this.getMilliseconds() //æ¯«ç§’ 
 			};
 			if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
 			for (var k in o)
@@ -20,7 +21,7 @@ function publicFunction() {
 		}
 	};
 
-	//µo°e°T®§
+	//ç™¼é€è¨Šæ¯
 	this.sendMessage = function (bot, messages) {
 		bot.channel.send(messages);
 		//bot.reply(messages);
@@ -40,25 +41,35 @@ function publicFunction() {
 	};
 
 
-	this.writeErrorLog = function (msg, time_difference, external_path) {
+	this.writeErrorLog = function (msg, time_difference, external_path, bot_name) {
 		try {
+			let date = _this.setTimezone(new Date(), time_difference);
+			let error_message = 'ã€' + date.Format("yyyy-MM-dd hh:mm:ss") + 'ã€‘ ' + bot_name + '\n' + msg;
+
+			//æ¨æ’­è¨Šæ¯åˆ°ä¸»æ§å°
+			let Discord = require('discord.js');
+			let init = require(external_path + 'bot_control_info.json');
+			let hook = new Discord.WebhookClient(init.error_return_webhook_id, init.error_return_webhook_token);
+			hook.send(error_message);
+
+
 			if (fs == undefined) {
 				var fs = require('fs');
 			}
-			var date = _this.setTimezone(new Date(), time_difference);
 
-			fs.appendFile(external_path + 'error_log.txt', '¡i' + date.Format("yyyy-MM-dd hh:mm:ss") + '¡j' + msg + '\n', function (err) {
+			fs.appendFile(external_path + 'error_log.txt', error_message + '\n', function (err) {
 				if (err) throw err;
 			});
+
 		} catch (e) {
 			console.log('----------------Error----------------');
-			console.log('ÀÉ®×¼g¤J¥¢±Ñ¡C');
+			console.log('æª”æ¡ˆå¯«å…¥å¤±æ•—ã€‚');
 			console.log(e);
 		}
 	}
 
 	this.setTimezone = function(date, timezone) {
-		utc_offset = (date.getTimezoneOffset() * -1) / 60;
+		let utc_offset = (date.getTimezoneOffset() * -1) / 60;
 
 		if (utc_offset != timezone) {
 			date.setHours(date.getHours() - utc_offset + timezone);
