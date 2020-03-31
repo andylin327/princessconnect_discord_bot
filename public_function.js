@@ -77,6 +77,56 @@ function publicFunction() {
 
 		return date;
 	}
+
+	//獲取字串長度（漢字算兩個字元，字母數字算一個）
+	this.getByteLen = function (val) {
+		var len = 0;
+
+		for (var i = 0; i < val.length; i++) {
+			var a = val.charAt(i);
+
+			if (a.match(/[^\x00-\xff]/ig) != null) {
+				len += 2;
+			}
+			else {
+				len += 1;
+			}
+		}
+
+		return len;
+	}
+
+	/**
+	 * 文字填充，往左或往右補足到指定字元數
+	 * @param {string} str
+	 * @param {string} direction 填充方向(l or r)
+	 * @param {int} condition_word_count
+	 * @param {string} filler
+	 */
+	this.strFilling = function (str, direction, condition_word_count, filler) {
+
+		let str_count = _this.getByteLen(str);
+
+		if (str_count < condition_word_count) {
+			let filler_count = _this.getByteLen(filler);
+
+			for (var i = str_count; i < condition_word_count; i += filler_count) {
+				switch (direction) {
+					case 'l':
+						str = filler + str;
+						break;
+					case 'r':
+						str += filler;
+						break;
+					default:
+                }
+				
+            }
+		}
+
+		return str;
+
+    }
 };
 module.exports = publicFunction;
 

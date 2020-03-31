@@ -1,26 +1,23 @@
-'use strict';
+ï»¿'use strict';
 exports = module.exports = function (_index, _item, _headers) {
 
     var key = _headers;
     var value = [];
+    var old_value = [];
     var index = _index;
     var item = _item;
     var _this = this;
 
     for (var i = 0; i < key.length; i++) {
         value.push(item[key[i]]);
-    }
-   
-    //console.log(value);
-    this.getValue = function () {
-        return value;
+        old_value.push(item[key[i]]);
     }
 
     /**
-     * ¥Îheaderªºname¨Ó¨ú±oÄæ¦ì¸ê®Æ
+     * ç”¨headerçš„nameä¾†å–å¾—æ¬„ä½è³‡æ–™
      * @param {string} _key
      */
-    this.getKeyItemData = function(_key) {
+    this.getKeyItemData = function (_key) {
         let result = null;
 
         key.forEach(function (value, index, arr) {
@@ -32,9 +29,17 @@ exports = module.exports = function (_index, _item, _headers) {
 
         return result;
     }
+   
+    this.getValue = function () {
+        return value;
+    }
+
+    this.getOldValue = function () {
+        return old_value;
+    }
 
     /**
-     * ¥Î index ¨ú±oÄæ¦ì¸ê®Æ
+     * ç”¨ index å–å¾—æ¬„ä½è³‡æ–™
      * @param {int} index
      */
     this.getIndexItemData = function(index) {
@@ -46,7 +51,7 @@ exports = module.exports = function (_index, _item, _headers) {
     }
 
     /**
-     * Àx¦s
+     * å„²å­˜
      * */
     this.save = async function (_key) {
         if (_key == undefined) {
@@ -73,7 +78,7 @@ exports = module.exports = function (_index, _item, _headers) {
     }
 
     /**
-     * ÀË¬d key ¬O§_¦s¦b
+     * æª¢æŸ¥ key æ˜¯å¦å­˜åœ¨
      * @param {any} _key
      */
     this.hasKey = function (_key) {

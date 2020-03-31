@@ -1,4 +1,4 @@
-'use strict';
+ï»¿'use strict';
 exports = module.exports = function (_sheet) {
     var GoogleExcelRowItem = require('./GoogleExcelRowItem.js');
 
@@ -8,7 +8,7 @@ exports = module.exports = function (_sheet) {
     var headers = [];
 
     /**
-    * ¨ú±o¬¡­¶Ã¯¸ê®Æ
+    * å–å¾—æ´»é ç°¿è³‡æ–™
     */
     this.getRows = async function()
     {
