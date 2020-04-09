@@ -28,21 +28,20 @@ function BotCommandBehavior() {
         let now_date = new Date();
         //設定時差
         now_date = public_function.setTimezone(now_date, init.time_difference);
-            
 
         let member_list_sheet = await google_excel.getSheet(init.member_list_sheet_index);
         let nickname = null;
         let google_excel_row_item = null;
         //如果 id 是純數字，那就是去找 uid
         if (is_int.test(id)) {
-
             google_excel_row_item = await _this.sheetSearchData(member_list_sheet, '唯一ID', id);
-            nickname = google_excel_row_item.getKeyItemData('ID');
         } 
         //如果 id 不是純數字，那就是去找遊戲暱稱
         else {
-
             google_excel_row_item = await _this.sheetSearchData(member_list_sheet, 'ID', id);
+        }
+
+        if (google_excel_row_item != null) {
             nickname = google_excel_row_item.getKeyItemData('ID');
         }
 
@@ -397,7 +396,7 @@ function BotCommandBehavior() {
                                 }
                             }
                     }
-                });    
+                });
             });
 
             return lists;
@@ -468,7 +467,6 @@ function BotCommandBehavior() {
 
                                 let id = google_excel_row_item.getKeyItemData('ID');
                                 if (id != '') {
-                                   
                                     let damage = parseInt(google_excel_row_item.getKeyItemData(columns[column_index]).replace(/,/g, ""));
                                     let yesterday_damage = 0;
                                     let the_day_before_yesterday_damage = 0;
@@ -506,6 +504,10 @@ function BotCommandBehavior() {
      * 重置傷害表
      * */
     this.resetDamageExcel = async function () {
+
+        //備份
+        _this.damageDataBackUp();
+
         let init = require(external_path + 'auth.json');
         let creds = require(external_path + init.google_creds);
         let { GoogleSpreadsheet } = require('google-spreadsheet');
@@ -569,6 +571,57 @@ function BotCommandBehavior() {
     };
 
     /**
+     * 備份傷害表單
+     * */
+    this.damageDataBackUp = async function () {
+        let init = require(external_path + 'auth.json');
+        let creds = require(external_path + init.google_creds);
+        let { GoogleSpreadsheet } = require('google-spreadsheet');
+        let GoogleExcel = require('./GoogleExcel.js');
+
+        //new Google API物件
+        let doc = new GoogleSpreadsheet(init.path);
+
+        let google_excel = new GoogleExcel(doc, creds);
+
+        try {
+
+            //let damage_list_sheet = await google_excel.getSheet(init.damage_list_sheet_index);
+            let damage_list_sheet = await google_excel.getSheet(10);
+            
+            try {
+                var damage_list_sheet_promise = damage_list_sheet.getRows();
+
+                await damage_list_sheet_promise.then(async function (damage_list_sheet_rows) {
+
+                    let headers = damage_list_sheet.getHeaders();
+                    let new_sheet = await doc.addSheet({ title: '傷害表單自動備份', headerValues: headers.filter(function (el) { return el != '' }) });
+                    
+                    for (var i = 0; i < damage_list_sheet_rows.length; i++) {
+                        let obj = {};
+
+                        for (var j = 0; j < headers.length; j++) {
+                            let data = damage_list_sheet_rows[i].getIndexItemData(j);
+                            if (data != '' && data != null) {
+                                obj[headers[j]] = data;
+                            }
+                        }
+
+                        await new_sheet.addRow(obj);
+                    }
+                });
+
+            } catch (e) {
+                throw e;
+            }
+
+        } catch (e) {
+            throw e;
+        }
+
+    };
+
+    /**
      * 重新開始新的活動及重置傷害表
      * @param {any} _month
      * @param {any} _s_day
@@ -585,7 +638,10 @@ function BotCommandBehavior() {
         } else if (month < 1 || month > 12) {
             throw '傷害表單重置失敗，月份錯誤';
         }
-        
+
+        //備份
+        _this.damageDataBackUp();
+
         let init = require(external_path + 'auth.json');
         let creds = require(external_path + init.google_creds);
         let { GoogleSpreadsheet } = require('google-spreadsheet');
@@ -631,9 +687,7 @@ function BotCommandBehavior() {
                                         init_day++;
 
                                         columns.push(value);
-
                                     }
-
                                 });
 
                                 try {
@@ -737,7 +791,7 @@ function BotCommandBehavior() {
                     if (target_field_value == _target_value) {
                         result = google_excel_row_item;
                     }
-                }   
+                }
             });
 
             return result;
@@ -745,9 +799,7 @@ function BotCommandBehavior() {
         } catch (e) {
             throw e;
         }
-
     }
 }
-
 
 module.exports = BotCommandBehavior;

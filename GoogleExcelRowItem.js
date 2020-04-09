@@ -93,4 +93,8 @@ exports = module.exports = function (_index, _item, _headers) {
     this.getKeys = function () {
         return key;
     }
+
+    this.getItem = function () {
+        return item;
+    }
 };

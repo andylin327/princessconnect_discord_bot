@@ -172,14 +172,15 @@ bot.on("ready", function () {
 							} else {
 								public_function.sendMessage(data, '```diff\n-資料更新失敗 \n```');
 							}
-
 						});
 				}
 			} catch (e) {
 				//console.log(e);
-				public_function.sendMessage(data, e);
 
-				if (typeof e != 'string') {
+				if (typeof e == 'string') {
+					public_function.sendMessage(data, e);
+				} else {
+					public_function.sendMessage(data, '```diff\n-執行發生錯誤 \n```');
 					public_function.writeErrorLog(e, init.time_difference, external_path, 'bot.js');
                 }
 			}

@@ -8,8 +8,8 @@ const Discord           = require('discord.js');
 const init              = require(external_path + 'auth.json');
 const hook              = new Discord.WebhookClient(webhook_init.webhook_id, webhook_init.webhook_token);
 //const publicFunction    = require('./public_function.js');
-const botCommandBehavior   = require('./bot_command_behavior.js');
-const bot_command_behavior   = new botCommandBehavior();
+const BotCommandBehavior   = require('./BotCommandBehavior.js');
+const bot_command_behavior = new BotCommandBehavior();
 const domain            = 'http://www.princessconnect.so-net.tw/';
 
 console.log('Official News Push webhook_3.js Ready');
@@ -35,13 +35,18 @@ new CronJob('0 0 8-20 * * *',async  function () {
                
                 const $ = cheerio.load(body, { decodeEntities: false });
                 const news_list_dom = $(".news_con dd a");
-                //console.log(news_push_list);
+
                 news_list_dom.each(async function () {
 
                     let news_id = parseInt($(this).attr('href').slice(17));
+
                     if (!isNaN(news_id)) {
 
-                        if (!hasNewsId(news_push_list, news_id)) {
+                        let list_title = $(this).text();
+                        
+                        let local_news_data_index = getLocalNewsDataIndex(news_push_list, news_id);
+
+                        if (local_news_data_index == null || news_push_list[local_news_data_index].title != list_title) {
                             await request({
                                 url: domain + "news/newsDetail/" + news_id, //新聞詳細頁
                                 method: "GET"
@@ -76,7 +81,7 @@ new CronJob('0 0 8-20 * * *',async  function () {
                                     content_dom.find('p').each(function (i, v) {
                                         let content = $(this).text().replace(/ /g, "").replace(/    /g, "").replace(/&nbsp;/g, "");
                                         if (content == '') {
-                                            content_dom.find('p').eq(p_i).remove()
+                                            content_dom.find('p').eq(p_i).remove();
                                         } else {
                                             p_i++;
                                         }
@@ -92,10 +97,6 @@ new CronJob('0 0 8-20 * * *',async  function () {
                                             div_i++;
                                         }
                                     });
-
-                                    //content_dom.find('p').eq(0).remove();
-                                    //content_dom.find('div').eq(0).remove();
-                                    //content_dom.find('div').eq(0).remove();
 
                                     let content = content_dom.html().trim();
                                     content = content.replace(/\n/g, "");
@@ -120,14 +121,17 @@ new CronJob('0 0 8-20 * * *',async  function () {
 
                                     message += '```';
 
-                                    let json_obj = { id: news_id };
-                                    news_push_list.push(json_obj);
+                                    if (local_news_data_index == null) {
+                                        news_push_list.push({ id: news_id, title: list_title });
+                                    } else {
+                                        news_push_list[local_news_data_index].title = list_title;
+                                    }
 
                                     fs.writeFile(external_path + 'news_push_list.json', JSON.stringify(news_push_list), function (err) {
                                         if (err) throw err;
                                     });
 
-                                    hook.send(message);
+                                    //shook.send(message);
 
                                     //公會戰預告發布就重置傷害表
                                     if (webhook_init.is_auto_update_damage_xls) {
@@ -155,7 +159,6 @@ new CronJob('0 0 8-20 * * *',async  function () {
                                                         e_day = parseInt(s_t2[1]);
                                                         break;
                                                 }
-
                                             });
 
                                             bot_command_behavior.damageActivityStart(month, s_day, e_day);
@@ -174,19 +177,15 @@ new CronJob('0 0 8-20 * * *',async  function () {
     }
 }, null, true, 'Asia/Taipei');
 
+function getLocalNewsDataIndex(list, _id) {
 
-function hasNewsId(list, _id) {
-
-    let result = false;
     let list_count = list.length;
 
     for (var i = 0; i < list_count; i++) {
-        let id = list[i].id;
-        if (id == _id) {
-            result = true;
-            break;
+        if (list[i].id == _id) {
+            return i;
         }
     }
 
-    return result;
+    return null;
 }

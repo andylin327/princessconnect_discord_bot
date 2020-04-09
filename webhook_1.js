@@ -1,9 +1,4 @@
-﻿/**
- * 尚未出刀提醒名單 推播
- * 
- * */
-
-var external_path = '../Re_Dive_BOT/';
+﻿var external_path = '../Re_Dive_BOT/';
 //引入
 const CronJob   			= require('cron').CronJob;
 const publicFunction		= require('./public_function.js');

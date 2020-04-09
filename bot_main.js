@@ -37,7 +37,7 @@ bot.on("ready", function () {
             if (message.substring(0, 2) == '!!') {
                 //用空白拆解訊息
                 let args = message.substring(2).split(' ');
-                //取得第一字組文字
+                //取得第一組文字
                 let keyword = args[0].replace(/\s+/g, "");
                 //取得第二組文字
                 let message_str = message.substring(2).substring((keyword.length + 2) - 1);
@@ -197,12 +197,17 @@ bot.on("ready", function () {
                         }
 
                         break;
+                    /**
+                     * !!reset
+                     * */
                     case 'reset':
                         await bot_command_behavior.resetDamageExcel();
 
                         public_function.sendMessage(data, '傷害表已重置完畢');
                         break;
-
+                    /**
+                     * !!reset_start {月份} {開始日} {結束日}
+                     * */
                     case 'reset_start':
 
                         parameter = message_str.split(' ');
@@ -211,13 +216,17 @@ bot.on("ready", function () {
 
                         public_function.sendMessage(data, '傷害表已重置並更新下次開戰日期');
                         break;
-
+                    
                     default:
                         public_function.sendMessage(data, '查無指令');
                 }
             }
         } catch (e) {
-            public_function.writeErrorLog(e, init.time_difference, external_path, 'bot_main.js');
+            if (typeof e != 'string') {
+                public_function.writeErrorLog(e, init.time_difference, external_path, 'bot_main.js');
+            } else {
+                public_function.sendMessage(data, e);
+            }
         }
     });
 });
