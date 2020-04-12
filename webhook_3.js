@@ -131,7 +131,7 @@ new CronJob('0 0 8-20 * * *',async  function () {
                                         if (err) throw err;
                                     });
 
-                                    //shook.send(message);
+                                    shook.send(message);
 
                                     //公會戰預告發布就重置傷害表
                                     if (webhook_init.is_auto_update_damage_xls) {
