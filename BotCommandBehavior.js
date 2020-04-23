@@ -519,8 +519,7 @@ function BotCommandBehavior() {
         let google_excel = new GoogleExcel(doc, creds);
 
         try {
-            //let damage_list_sheet = await google_excel.getSheet(init.damage_list_sheet_index);
-	        let damage_list_sheet = await google_excel.getSheet(10);
+            let damage_list_sheet = await google_excel.getSheet(init.damage_list_sheet_index);
 
             try {
                 var damage_list_sheet_promise = damage_list_sheet.getRows();
@@ -586,8 +585,7 @@ function BotCommandBehavior() {
 
         try {
 
-            //let damage_list_sheet = await google_excel.getSheet(init.damage_list_sheet_index);
-            let damage_list_sheet = await google_excel.getSheet(10);
+            let damage_list_sheet = await google_excel.getSheet(init.damage_list_sheet_index);
             
             try {
                 var damage_list_sheet_promise = damage_list_sheet.getRows();
@@ -654,8 +652,7 @@ function BotCommandBehavior() {
 
         try {
 
-            //let damage_list_sheet = await google_excel.getSheet(init.damage_list_sheet_index);
-            let damage_list_sheet = await google_excel.getSheet(10);
+            let damage_list_sheet = await google_excel.getSheet(init.damage_list_sheet_index);
 
             try {
                 var damage_list_sheet_promise = damage_list_sheet.getRows();
