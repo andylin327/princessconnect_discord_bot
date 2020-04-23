@@ -215,8 +215,8 @@ function BotCommandBehavior() {
             let doc = new GoogleSpreadsheet(init.path);
             let google_excel = new GoogleExcel(doc, creds);
 
-            //let damage_list_sheet = await google_excel.getSheet(init.damage_list_sheet_index);
-            let damage_list_sheet = await google_excel.getSheet(6);
+            let damage_list_sheet = await google_excel.getSheet(init.damage_list_sheet_index);
+
             //先記錄當下時間
             let now_date = new Date();
             //設定時差
@@ -323,8 +323,7 @@ function BotCommandBehavior() {
             now_date.setHours(now_date.getHours() - 5);
             let now_y = now_date.getFullYear();
 
-            //let damage_list_sheet = await google_excel.getSheet(init.damage_list_sheet_index);
-            let damage_list_sheet = await google_excel.getSheet(6);
+            let damage_list_sheet = await google_excel.getSheet(init.damage_list_sheet_index);
 
             try {
                 var damage_list_sheet_promise = damage_list_sheet.getRows();
@@ -432,8 +431,7 @@ function BotCommandBehavior() {
             now_date        = public_function.setTimezone(now_date, init.time_difference);
             let now_month   = now_date.getMonth() + 1;
 
-            //let damage_list_sheet = await google_excel.getSheet(init.damage_list_sheet_index);
-            let damage_list_sheet   = await google_excel.getSheet(6);
+            let damage_list_sheet = await google_excel.getSheet(init.damage_list_sheet_index);
 
             try {
 
