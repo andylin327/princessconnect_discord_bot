@@ -69,6 +69,9 @@ bot.on("ready", function () {
 			let msg = '';
 
 			try {
+				//將時間往前推5小時(因為重置時間為白天5點)
+				now_date.setHours(now_date.getHours() - 5);
+
 				//指令確認
 				switch (field) {
 					//列出當前紀錄
@@ -76,10 +79,7 @@ bot.on("ready", function () {
 						datas = await bot_command_behavior.getListNowDayDamge();
 
 						if (datas.length > 0) {
-
-							//將時間往前推5小時(因為重置時間為白天5點)
-							now_date.setHours(now_date.getHours() - 5);
-
+							
 							msg += (now_date.getMonth() + 1) + '/' + now_date.getDate() + ' 傷害\n```diff';
 							datas.forEach(function (v, i) {
 
