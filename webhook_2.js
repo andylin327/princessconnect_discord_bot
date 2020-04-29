@@ -18,7 +18,7 @@ var bot = new Discord.Client();
 bot.login(init.token);
 
 bot.on("ready", function (evt) {
-	console.log('Discord BOT webhook_1.js Ready');
+	console.log('Discord BOT webhook_2.js Ready');
 
 	/**
 	 * 當日結束前統計
