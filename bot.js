@@ -180,7 +180,7 @@ bot.on("ready", function () {
 				if (typeof e == 'string') {
 					public_function.sendMessage(data, e);
 				} else {
-					public_function.sendMessage(data, '```diff\n-執行發生錯誤 \n```');
+					public_function.sendMessage(data, '<@' + userID +'>\n```diff\n-更新失敗\n-指令執行發生錯誤 \n```');
 					public_function.writeErrorLog(e, init.time_difference, external_path, 'bot.js');
                 }
 			}
