@@ -659,7 +659,6 @@ function BotCommandBehavior() {
 
                     let headers = damage_list_sheet.getHeaders();
                     let init_day = s_day;
-                    let columns = [];
                     damage_list_sheet_rows.forEach(async function (google_excel_row_item, index, array) {
 
                         switch (index) {
@@ -680,8 +679,6 @@ function BotCommandBehavior() {
                                         }
 
                                         init_day++;
-
-                                        columns.push(value);
                                     }
                                 });
 
@@ -695,10 +692,10 @@ function BotCommandBehavior() {
                                 break;
                             default:
                                 let id = google_excel_row_item.getKeyItemData('ID');
-
+                                
                                 if (id != '') {
                                     let code = parseInt('C'.charCodeAt());
-                                    columns.forEach(function (value, key) {
+                                    headers.forEach(function (value, key) {
 
                                         switch (value) {
                                             case 'ID':
