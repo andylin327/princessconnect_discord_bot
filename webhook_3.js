@@ -127,7 +127,7 @@ new CronJob('0 0 8-20 * * *',async  function () {
                                         news_push_list[local_news_data_index].title = list_title;
                                     }
 
-                                    fs.writeFile(external_path + 'news_push_list.json', JSON.stringify(news_push_list), function (err) {
+                                    fs.writeFile(external_path + 'news_push_list.json', JSON.stringify(news_push_list), 'UTF8', function (err) {
                                         if (err) throw err;
                                     });
 
