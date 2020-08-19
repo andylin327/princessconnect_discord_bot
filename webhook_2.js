@@ -9,7 +9,7 @@ const creds					= require(external_path + init.google_creds);
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const public_function		= new publicFunction();
 var webhook_init			= require(external_path + 'webhook_init.json');
-const BotCommandBehavior	= require('./botCommandBehavior.js');
+const BotCommandBehavior	= require('./BotCommandBehavior.js');
 const hook					= new Discord.WebhookClient(webhook_init.webhook_id, webhook_init.webhook_token);
 public_function.dateFormat();
 const bot_command_behavior = new BotCommandBehavior();
