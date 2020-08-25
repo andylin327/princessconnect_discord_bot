@@ -26,9 +26,9 @@ bot.on("ready", function (evt) {
 	new CronJob('0 30 4,23 * * *',async function() {
 		try {
 			//刪除暫存
-			delete require.cache[require.resolve(external_path + 'webhook_init.json')];
+			//delete require.cache[require.resolve(external_path + 'webhook_init.json')];
 			//重新引入 json 檔
-			let webhook_init = require(external_path + 'webhook_init.json');
+			//let webhook_init = require(external_path + 'webhook_init.json');
 
 			//先記錄當下時間
 			var now_date 	= new Date();

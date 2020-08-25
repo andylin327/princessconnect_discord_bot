@@ -10,7 +10,8 @@ const shook              = new Discord.WebhookClient(webhook_init.webhook_id, we
 //const publicFunction    = require('./public_function.js');
 const BotCommandBehavior   = require('./BotCommandBehavior.js');
 const bot_command_behavior = new BotCommandBehavior();
-const domain            = 'http://www.princessconnect.so-net.tw/';
+const domain = 'http://www.princessconnect.so-net.tw/';
+var news_push_list = require(external_path + 'news_push_list.json');
 
 console.log('Official News Push webhook_3.js Ready');
 
@@ -18,9 +19,8 @@ new CronJob('0 0 8-20 * * *',async  function () {
 
     try {
         //刪除暫存
-        delete require.cache[require.resolve(external_path + 'news_push_list.json')];
-        var news_push_list = require(external_path + 'news_push_list.json');
-
+        //delete require.cache[require.resolve(external_path + 'news_push_list.json')];
+        
         request({
             url: domain + "/news", // 官網最新消息列表
             method: "GET"

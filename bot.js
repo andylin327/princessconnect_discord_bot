@@ -45,20 +45,20 @@ bot.on("ready", function () {
 			//設定時差
 			now_date = public_function.setTimezone(now_date, init.time_difference);
 			
-			try {
-				let create_date = new Date().Format("yyyy-MM-dd hh:mm:ss");
-				let log = {
-					user: user,
-					userID: userID,
-					channelID: channelID,
-					message: message,
-					create_date: create_date,
-				}
-				public_function.writeDateUpdateLog('【' + create_date + '】 ' + JSON.stringify(log), external_path);
-
-			} catch (e) {
-				public_function.writeErrorLog(e, init.time_difference, external_path, 'bot.js');
-			}
+			//try {
+			//	let create_date = new Date().Format("yyyy-MM-dd hh:mm:ss");
+			//	let log = {
+			//		user: user,
+			//		userID: userID,
+			//		channelID: channelID,
+			//		message: message,
+			//		create_date: create_date,
+			//	}
+			//	public_function.writeDateUpdateLog('【' + create_date + '】 ' + JSON.stringify(log), external_path);
+			//
+			//} catch (e) {
+			//	public_function.writeErrorLog(e, init.time_difference, external_path, 'bot.js');
+			//}
 
 			//用空白拆解訊息
 			let args = message.substring(2).split(' ');

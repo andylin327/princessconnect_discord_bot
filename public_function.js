@@ -27,17 +27,17 @@ function publicFunction() {
 		//bot.reply(messages);
 	};
 	this.writeDateUpdateLog = function (msg, external_path) {
-		try {
-			if (fs == undefined) {
-				var fs = require('fs');
-			}
-
-			fs.appendFile(external_path + 'write_log.txt', msg + '\n', function (err) {
-				if (err) throw err;
-			});
-		} catch (e) {
-			throw e
-		}
+		//try {
+		//	if (fs == undefined) {
+		//		var fs = require('fs');
+		//	}
+		//
+		//	fs.appendFile(external_path + 'write_log.txt', msg + '\n', function (err) {
+		//		if (err) throw err;
+		//	});
+		//} catch (e) {
+		//	throw e
+		//}
 	};
 
 
@@ -53,13 +53,13 @@ function publicFunction() {
 			hook.send(error_message);
 
 
-			if (fs == undefined) {
-				var fs = require('fs');
-			}
-
-			fs.appendFile(external_path + 'error_log.txt', error_message + '\n', function (err) {
-				if (err) throw err;
-			});
+			//if (fs == undefined) {
+			//	var fs = require('fs');
+			//}
+			//
+			//fs.appendFile(external_path + 'error_log.txt', error_message + '\n', function (err) {
+			//	if (err) throw err;
+			//});
 
 		} catch (e) {
 			console.log('----------------Error----------------');
