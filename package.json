@@ -11,7 +11,7 @@
 		"discord.js": "^12.0.2",
 		"google-spreadsheet": "^3.0.10",
 		"jquery": "^3.4.1",
-		"jsdom": "^15.2.1",
+		"jsdom": "^16.5.0",
 		"request": "^2.88.2",
 		"winston": "^3.2.1"
 	}
