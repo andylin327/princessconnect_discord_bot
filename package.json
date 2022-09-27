@@ -5,14 +5,14 @@
 	"main": "bot.js",
 	"author": "Double",
 	"dependencies": {
-		"async": "^3.2.0",
-		"cheerio": "^1.0.0-rc.3",
+		"async": "^3.2.4",
+		"cheerio": "^1.0.0-rc.12",
 		"cron": "^1.8.2",
-		"discord.js": "^12.0.2",
-		"google-spreadsheet": "^3.0.10",
-		"jquery": "^3.4.1",
-		"jsdom": "^15.2.1",
+		"discord.js": "^12.5.3",
+		"google-spreadsheet": "^3.3.0",
+		"jquery": "^3.6.1",
+		"jsdom": "^20.0.0",
 		"request": "^2.88.2",
-		"winston": "^3.2.1"
+		"winston": "^3.8.2"
 	}
 }

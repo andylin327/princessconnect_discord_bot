@@ -11,16 +11,20 @@ public_function.dateFormat();
 
 //var is_int = /^[0-9]+$/;
 //var is_ds_id = /^[0-9]{18,18}$/;
-
-var bot = new Discord.Client();
+const bot = new Discord.Client({ intents: [198656] });
 bot.login(bot_info.main_bot_token);
 
+
 bot.on("ready", function () {
+    console.log(`Logged in as ${bot.user.tag}!`);
     console.log('Discord Main BOT Ready');
-
+    
     bot.on("message", async function (data) {
-
+        
         try {
+            
+
+            //public_function.sendMessage(data, JSON.stringify(data));
             var message     = data.content;
             var user        = data.author.username;
             var userID      = data.author.id;
@@ -32,7 +36,7 @@ bot.on("ready", function () {
 
             //將時間往前推5小時(因為重置時間為白天5點)
             now_date.setHours(now_date.getHours() - 5);
-
+            
             //檢查訊息是否有帶入指定符號
             if (message.substring(0, 2) == '!!') {
                 //用空白拆解訊息
@@ -45,7 +49,7 @@ bot.on("ready", function () {
 
                 let msg = '';
                 let parameter = [];
-
+                
                 switch (keyword) {
                     /**
                      * !!update {id} {day} {damage}

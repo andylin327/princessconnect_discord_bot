@@ -19,15 +19,16 @@ logger.add(new logger.transports.Console, {
 });
 //logger.level = "debug";
 // Initialize Discord Bot
-var bot = new Discord.Client();
+var bot = new Discord.Client({ intents: [198656] });
 bot.login(init.token);
 
-bot.on("ready", function () {
 
+bot.on("ready", function () {
+	console.log(`Logged in as ${bot.user.tag}!`);
 	console.log('Discord BOT Ready');
 
 	bot.on("message", async function (data) {
-
+		console.log(data);
 		let message = data.content;
 		let user = data.author.username;
 		let userID = data.author.id;
