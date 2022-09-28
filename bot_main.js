@@ -12,7 +12,7 @@ public_function.dateFormat();
 //var is_int = /^[0-9]+$/;
 //var is_ds_id = /^[0-9]{18,18}$/;
 
-var bot = new Discord.Client();
+var bot = new Discord.Client({intents:[198656]});
 bot.login(bot_info.main_bot_token);
 
 bot.on("ready", function () {
