@@ -19,7 +19,7 @@ logger.add(new logger.transports.Console, {
 });
 //logger.level = "debug";
 // Initialize Discord Bot
-var bot = new Discord.Client();
+var bot = new Discord.Client({intents:[198656]});
 bot.login(init.token);
 
 bot.on("ready", function () {
